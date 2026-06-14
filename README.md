@@ -1,56 +1,106 @@
-# Welcome to your Expo app 👋
+# Controle de Estudos
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo mobile desenvolvido em React Native com Expo para controle dos estudos.
 
-## Get started
+## Integrantes
 
-1. Install dependencies
+- Thomas Wolf
+- João W
+- Wesley
 
-   ```bash
-   npm install
-   ```
+## Objetivo
 
-2. Start the app
+Permitir que estudantes registrem matérias e assuntos estudados, mantendo os dados disponíveis mesmo sem conexão com a internet.
 
-   ```bash
-   npx expo start
-   ```
+## Público-Alvo
 
-In the output, you'll find options to open the app in a
+Estudantes que desejam organizar e acompanhar seus estudos de forma simples.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tecnologias Utilizadas
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- React Native
+- Expo
+- Expo Router
+- Firebase Firestore
+- AsyncStorage
+- TypeScript
 
-## Get a fresh project
-
-When you're ready, run:
+## Dependências Principais
 
 ```bash
-npm run reset-project
+npm install firebase
+
+npx expo install @react-native-async-storage/async-storage
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Funcionalidades Implementadas
 
-### Other setup steps
+- Cadastro de estudos
+- Listagem de estudos
+- Navegação entre telas
+- Persistência local com AsyncStorage
+- Integração com Firebase Firestore
+- Funcionamento offline
+- Leitura dos dados armazenados localmente
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Estrutura do Projeto
 
-## Learn more
+```text
+src/
+├── app/
+│   ├── index.tsx
+│   ├── add-study.tsx
+│   └── studies.tsx
+│
+├── services/
+│   └── firebase.ts
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Estratégia Offline First
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+O aplicativo utiliza o AsyncStorage para armazenar os estudos localmente no dispositivo.
 
-## Join the community
+Fluxo atual:
 
-Join our community of developers creating universal apps.
+1. O usuário cadastra um estudo.
+2. O estudo é salvo localmente.
+3. Os dados permanecem disponíveis mesmo sem internet.
+4. Quando houver conexão, os dados também são enviados para o Firebase.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Como Executar
+
+Instalar dependências:
+
+```bash
+npm install
+```
+
+Executar o projeto:
+
+```bash
+npx expo start
+```
+
+## Status do Projeto
+
+### Semana 1
+- Definição do tema
+- Definição do escopo
+- Prototipação das telas
+
+### Semana 2
+- Estrutura inicial do projeto
+- Configuração do Expo
+- Configuração do Firebase
+- Implementação das telas
+- Persistência local com AsyncStorage
+- Implementação do funcionamento offline
+
+### Semana 3
+
+- Editar estudos
+- Excluir estudos
+- Melhorar sincronização entre AsyncStorage e Firebase
+- Tratamento avançado de erros
+- Indicador de conexão

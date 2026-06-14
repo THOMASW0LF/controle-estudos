@@ -1,0 +1,11 @@
+# Instalação das dependências
+
+npm install firebase
+
+npx expo install @react-native-async-storage/async-storage
+
+# npx expo install expo-router (acho que não precisa)
+
+# npx expo install react-native-safe-area-context (acho que não precisa)
+
+# npx expo install react-native-screens (acho que não precisa)
