@@ -12,7 +12,16 @@ import {
   View,
 } from 'react-native';
 import { db } from '../services/firebase';
+
 const STUDIES_STORAGE_KEY = '@controle-estudos:items';
+
+type Study = {
+  id: string;
+  subject: string;
+  topic: string;
+  remoteId?: string;
+  synced?: boolean;
+};
 
 export default function AddStudyScreen() {
   const [subject, setSubject] = useState('');
@@ -25,46 +34,45 @@ export default function AddStudyScreen() {
     }
 
     try {
-      const newStudy = {
+      const newStudy: Study = {
         id: String(Date.now()),
         subject: subject.trim(),
         topic: topic.trim(),
+        synced: false,
       };
 
-      // Salvar localmente
-      const storedStudies = await AsyncStorage.getItem(
-        STUDIES_STORAGE_KEY
-      );
+      const storedStudies = await AsyncStorage.getItem(STUDIES_STORAGE_KEY);
+      const studies: Study[] = storedStudies ? JSON.parse(storedStudies) : [];
 
-      const studies = storedStudies
-        ? JSON.parse(storedStudies)
-        : [];
-
-      studies.push(newStudy);
+      studies.unshift(newStudy);
 
       await AsyncStorage.setItem(
         STUDIES_STORAGE_KEY,
         JSON.stringify(studies)
       );
 
-      // Tentar salvar no Firebase
       try {
-        await addDoc(collection(db, 'studies'), {
+        const docRef = await addDoc(collection(db, 'studies'), {
           subject: newStudy.subject,
           topic: newStudy.topic,
           createdAt: new Date(),
         });
-      } catch (firebaseError) {
-        console.log(
-          'Não foi possível salvar no Firebase:',
-          firebaseError
+
+        const updatedStudies = studies.map((study) =>
+          study.id === newStudy.id
+            ? { ...study, remoteId: docRef.id, synced: true }
+            : study
         );
+
+        await AsyncStorage.setItem(
+          STUDIES_STORAGE_KEY,
+          JSON.stringify(updatedStudies)
+        );
+      } catch (firebaseError) {
+        console.log('Não foi possível salvar no Firebase:', firebaseError);
       }
 
-      Alert.alert(
-        'Sucesso',
-        'Estudo salvo localmente e enviado ao Firebase.'
-      );
+      Alert.alert('Sucesso', 'Estudo salvo.');
 
       setSubject('');
       setTopic('');
