@@ -16,6 +16,8 @@ export type Study = {
   topic: string;
   remoteId?: string;
   synced?: boolean;
+  color?: string;
+  deadline?: string; // Data limite no formato "DD/MM/YYYY"
 };
 
 export async function syncStudies(): Promise<Study[]> {
@@ -29,12 +31,14 @@ export async function syncStudies(): Promise<Study[]> {
 
     if (!study.synced) {
       if (study.remoteId) {
+        // Atualiza apenas subject e topic no Firebase
         await updateDoc(doc(db, 'studies', study.remoteId), {
           subject: study.subject,
           topic: study.topic,
           updatedAt: new Date(),
         });
       } else {
+        // Cria apenas com subject e topic no Firebase
         const docRef = await addDoc(collection(db, 'studies'), {
           subject: study.subject,
           topic: study.topic,
@@ -65,6 +69,7 @@ export async function syncStudies(): Promise<Study[]> {
 export async function downloadFromCloud(): Promise<Study[]> {
   const querySnapshot = await getDocs(collection(db, 'studies'));
 
+  // Busca apenas subject e topic do Firebase
   const cloudStudies: Study[] = querySnapshot.docs.map((docSnap) => {
     const data = docSnap.data() as {
       subject?: string;
@@ -80,10 +85,23 @@ export async function downloadFromCloud(): Promise<Study[]> {
     };
   });
 
+  // Mantém cores e prazos locais
+  const storedStudies = await AsyncStorage.getItem(STUDIES_STORAGE_KEY);
+  const localStudies: Study[] = storedStudies ? JSON.parse(storedStudies) : [];
+  
+  const mergedStudies = cloudStudies.map((cloudStudy) => {
+    const localStudy = localStudies.find((s) => s.remoteId === cloudStudy.remoteId);
+    return {
+      ...cloudStudy,
+      color: localStudy?.color,
+      deadline: localStudy?.deadline, // Mantém o prazo local
+    };
+  });
+
   await AsyncStorage.setItem(
     STUDIES_STORAGE_KEY,
-    JSON.stringify(cloudStudies)
+    JSON.stringify(mergedStudies)
   );
 
-  return cloudStudies;
+  return mergedStudies;
 }

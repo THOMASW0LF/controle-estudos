@@ -31,6 +31,8 @@ Estudantes que desejam organizar e acompanhar seus estudos de forma simples.
 npm install firebase
 
 npx expo install @react-native-async-storage/async-storage
+
+npx expo install expo-linear-gradient
 ```
 
 ## Funcionalidades Implementadas
